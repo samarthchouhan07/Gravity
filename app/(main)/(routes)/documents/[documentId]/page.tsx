@@ -11,12 +11,14 @@ import dynamic from "next/dynamic";
 import { useMemo } from "react";
 
 interface DocumentIdPageProps {
-  params: {
+  params: Promise<{
     documentId: Id<"documents">;
-  };
+  }>;
 }
 
-const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
+const DocumentIdPage = async ({ params }: DocumentIdPageProps) => {
+  // Await the params to resolve the promise
+  const { documentId } = await params;
 
   const Editor = useMemo(
     () =>
@@ -29,14 +31,14 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   
 
   const document = useQuery(api.documents.getById, {
-    documentId: params.documentId,
+    documentId: documentId,
   });
 
   const update = useMutation(api.documents.update);
 
   const onChange = (content: string) => {
     update({
-      id: params.documentId,
+      id: documentId,
       content,
     });
   };
