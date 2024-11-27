@@ -48,9 +48,9 @@ const DocumentIdPage: FC = () => {
     });
   };
   
-  if (typeof documentId !== "string") {
-    return <div>Invalid document ID</div>;
-  }
+  // if (typeof documentId !== "string") {
+  //   return <div>Invalid document ID</div>;
+  // }
   if (document === undefined) {
     return (
       <div>

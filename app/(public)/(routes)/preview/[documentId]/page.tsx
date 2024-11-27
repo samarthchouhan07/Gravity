@@ -10,38 +10,47 @@ import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 
-interface DocumentIdPageProps {
-  params: {
-    documentId: Id<"documents">;
-  };
-}
+import { FC } from "react";
+import { useRouter } from "next/router";
 
-const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
+// Dynamically import the Editor component (outside the component function)
+const Editor = dynamic(
+  () => import("@/components/editor").then((mod) => mod.Editor),
+  {
+    ssr: false,
+    loading: () => <div>Loading editor...</div>,
+  }
+);
 
-  const Editor = useMemo(
-    () =>
-      dynamic(() => import("@/components/editor").then((mod) => mod.Editor), {
-        ssr: false,
-        loading: () => <div>Loading editor...</div>,
-      }),
-    []
-  );
+// interface DocumentIdPageProps {
+//   params: {
+//     documentId: Id<"documents">;
+//   };
+// }
+
+// Synchronous Component
+const DocumentIdPage: FC = () => {
+  const router = useRouter();
+  const { documentId } = router.query; // Use router.query to get documentId
+
+  // Ensure that the documentId is available and in the correct format
   
-  
-
   const document = useQuery(api.documents.getById, {
-    documentId: params.documentId,
+    documentId: documentId as Id<"documents">, // Ensure correct typing for documentId
   });
-
+  
   const update = useMutation(api.documents.update);
-
+  
   const onChange = (content: string) => {
     update({
-      id: params.documentId,
+      id: documentId as Id<"documents">,
       content,
     });
   };
-
+  
+  // if (typeof documentId !== "string") {
+  //   return <div>Invalid document ID</div>;
+  // }
   if (document === undefined) {
     return (
       <div>
