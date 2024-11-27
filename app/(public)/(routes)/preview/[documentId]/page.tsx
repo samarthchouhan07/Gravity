@@ -8,7 +8,7 @@ import { Cover } from "@/components/cover";
 import { Skeleton } from "@/components/ui/skeleton";
 // import { Editor } from "@/components/editor";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { FC } from "react";
 import { useRouter } from "next/router";
@@ -30,11 +30,14 @@ const Editor = dynamic(
 
 // Synchronous Component
 const DocumentIdPage: FC = () => {
+  const [documentId, setDocumentId] = useState<string | null>(null);
   const router = useRouter();
-  const { documentId } = router.query; // Use router.query to get documentId
 
-  // Ensure that the documentId is available and in the correct format
-  
+  useEffect(() => {
+    if (router.query.documentId) {
+      setDocumentId(router.query.documentId as string);
+    }
+  }, [router.query]);
   const document = useQuery(api.documents.getById, {
     documentId: documentId as Id<"documents">, // Ensure correct typing for documentId
   });
