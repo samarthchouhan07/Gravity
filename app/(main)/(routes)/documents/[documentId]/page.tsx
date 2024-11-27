@@ -12,6 +12,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { FC } from "react";
 import { useRouter } from "next/router";
+import { useParams } from "next/navigation";
 
 // Dynamically import the Editor component (outside the component function)
 const Editor = dynamic(
@@ -30,14 +31,8 @@ const Editor = dynamic(
 
 // Synchronous Component
 const DocumentIdPage: FC = () => {
-  const [documentId, setDocumentId] = useState<string | null>(null);
-  const router = useRouter();
+  const { documentId } = useParams(); // This will automatically grab the documentId from the URL
 
-  useEffect(() => {
-    if (router.query.documentId) {
-      setDocumentId(router.query.documentId as string);
-    }
-  }, [router.query]);
   const document = useQuery(api.documents.getById, {
     documentId: documentId as Id<"documents">, // Ensure correct typing for documentId
   });
