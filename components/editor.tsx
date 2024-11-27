@@ -11,13 +11,15 @@ import { useEdgeStore } from "@/lib/edgestore";
 interface EditorProps {
   onChange: (value: string) => void;
   initialContent?: string;
+  editable?:boolean
 }
 
-export const Editor = ({ onChange, initialContent }: EditorProps) => {
+export const Editor = ({ onChange, initialContent,editable=true}: EditorProps) => {
   const { resolvedTheme } = useTheme();
   const {edgestore}=useEdgeStore()
 
   const handleUpload = async (file: File, ) => {
+    if(!editable) return ""
     const response = await edgestore.publicFiles.upload({
       file,
     });
@@ -34,6 +36,7 @@ export const Editor = ({ onChange, initialContent }: EditorProps) => {
 
   // Handle content changes
   const handleChange = () => {
+    if(!editable) return
     const content = JSON.stringify(editor.document, null, 2); // Use editor.document to get current content
     onChange(content);
   };
@@ -42,6 +45,7 @@ export const Editor = ({ onChange, initialContent }: EditorProps) => {
   return (
     <div>
       <BlockNoteView
+      editable={editable}
         editor={editor}
         theme={resolvedTheme === "dark" ? "dark" : "light"}
         onChange={handleChange} // Call handleChange on content change
