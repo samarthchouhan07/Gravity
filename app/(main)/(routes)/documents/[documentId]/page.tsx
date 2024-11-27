@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 import { useMemo } from "react";
 
 import { FC } from "react";
+import { useRouter } from "next/router";
 
 // Dynamically import the Editor component (outside the component function)
 const Editor = dynamic(
@@ -21,25 +22,31 @@ const Editor = dynamic(
   }
 );
 
-interface DocumentIdPageProps {
-  params: {
-    documentId: Id<"documents">;
-  };
-}
+// interface DocumentIdPageProps {
+//   params: {
+//     documentId: Id<"documents">;
+//   };
+// }
 
 // Synchronous Component
-const DocumentIdPage: FC<DocumentIdPageProps> = ({ params }) => {
-  const { documentId } = params;
+const DocumentIdPage: FC = () => {
+  const router = useRouter();
+  const { documentId } = router.query; // Use router.query to get documentId
+
+  // Ensure that the documentId is available and in the correct format
+  if (typeof documentId !== "string") {
+    return <div>Invalid document ID</div>;
+  }
 
   const document = useQuery(api.documents.getById, {
-    documentId: documentId,
+    documentId: documentId as Id<"documents">, // Ensure correct typing for documentId
   });
 
   const update = useMutation(api.documents.update);
 
   const onChange = (content: string) => {
     update({
-      id: documentId,
+      id: documentId as Id<"documents">,
       content,
     });
   };
