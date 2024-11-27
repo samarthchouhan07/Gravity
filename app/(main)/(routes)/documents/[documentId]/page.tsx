@@ -10,25 +10,26 @@ import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 
+import { FC } from "react";
+
+// Dynamically import the Editor component (outside the component function)
+const Editor = dynamic(
+  () => import("@/components/editor").then((mod) => mod.Editor),
+  {
+    ssr: false,
+    loading: () => <div>Loading editor...</div>,
+  }
+);
+
 interface DocumentIdPageProps {
-  params: Promise<{
+  params: {
     documentId: Id<"documents">;
-  }>;
+  };
 }
 
-const DocumentIdPage = async ({ params }: DocumentIdPageProps) => {
-  // Await the params to resolve the promise
-  const { documentId } = await params;
-
-  const Editor = useMemo(
-    () =>
-      dynamic(() => import("@/components/editor").then((mod) => mod.Editor), {
-        ssr: false,
-        loading: () => <div>Loading editor...</div>,
-      }),
-    []
-  );
-  
+// Synchronous Component
+const DocumentIdPage: FC<DocumentIdPageProps> = ({ params }) => {
+  const { documentId } = params;
 
   const document = useQuery(api.documents.getById, {
     documentId: documentId,
