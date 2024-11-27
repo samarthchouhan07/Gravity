@@ -34,23 +34,23 @@ const DocumentIdPage: FC = () => {
   const { documentId } = router.query; // Use router.query to get documentId
 
   // Ensure that the documentId is available and in the correct format
-  if (typeof documentId !== "string") {
-    return <div>Invalid document ID</div>;
-  }
-
+  
   const document = useQuery(api.documents.getById, {
     documentId: documentId as Id<"documents">, // Ensure correct typing for documentId
   });
-
+  
   const update = useMutation(api.documents.update);
-
+  
   const onChange = (content: string) => {
     update({
       id: documentId as Id<"documents">,
       content,
     });
   };
-
+  
+  if (typeof documentId !== "string") {
+    return <div>Invalid document ID</div>;
+  }
   if (document === undefined) {
     return (
       <div>
