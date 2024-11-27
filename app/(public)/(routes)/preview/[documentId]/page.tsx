@@ -22,7 +22,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     () =>
       dynamic(() => import("@/components/editor").then((mod) => mod.Editor), {
         ssr: false,
-        loading: () => <div>Loading editor...</div>, // Optional loading fallback
+        loading: () => <div>Loading editor...</div>,
       }),
     []
   );
