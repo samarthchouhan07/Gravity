@@ -19,9 +19,14 @@ interface DocumentIdPageProps {
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
 
   const Editor = useMemo(
-    () => dynamic(() => import('@/components/editor').then((mod) => mod.Editor), { ssr: false }),
+    () =>
+      dynamic(() => import("@/components/editor").then((mod) => mod.Editor), {
+        ssr: false,
+        loading: () => <div>Loading editor...</div>, // Optional loading fallback
+      }),
     []
   );
+  
   
 
   const document = useQuery(api.documents.getById, {
