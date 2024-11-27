@@ -12,7 +12,7 @@ import { useMemo } from "react";
 
 interface DocumentIdPageProps {
   params: {
-    documentId: Id<"documents">;
+    documentId:string
   };
 }
 
@@ -29,14 +29,14 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   
 
   const document = useQuery(api.documents.getById, {
-    documentId: params.documentId,
+    documentId: params.documentId as Id<"documents">,
   });
 
   const update = useMutation(api.documents.update);
 
   const onChange = (content: string) => {
     update({
-      id: params.documentId,
+      id: params.documentId as Id<"documents">,
       content,
     });
   };
